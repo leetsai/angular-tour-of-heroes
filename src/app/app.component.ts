@@ -1,18 +1,11 @@
-import { Component } from '@angular/core';
-import { Hero } from './hero';
+import { Component, OnInit } from '@angular/core';
+// ngOnInit is a lifecycle hook. Angular offers interfaces for tapping into critical moments in the component life cycle:
+// a) at creation
+// b) after each change
+// c) at its eventual destruction
 
-const HEROES: Hero[] = [
-  { id: 11, name: 'Mr. Dipnado' },
-  { id: 12, name: 'Narco' },
-  { id: 13, name: 'Bombasto' },
-  { id: 14, name: 'Celeritas' },
-  { id: 15, name: 'Magneta' },
-  { id: 16, name: 'RubberMan' },
-  { id: 17, name: 'Dynama' },
-  { id: 18, name: 'Dr IQ' },
-  { id: 19, name: 'The Little Dipper' },
-  { id: 20, name: 'The Big Dipper' }
-];
+import { Hero } from './hero';
+import { HeroService } from './hero.service';
 
 @Component({
   selector: 'my-app',
@@ -76,13 +69,24 @@ const HEROES: Hero[] = [
       margin-right: .8em;
       border-radius: 4px 0 0 4px;
     }
-  `]
+  `],
+  providers: [HeroService]
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Tour of Heroes';
-  heroes = HEROES;
+  heroes: Hero[];
   selectedHero: Hero;
+
+  constructor(private heroService: HeroService) { }
+
+  getHeroes(): void {
+    this.heroService.getHeroes().then(heroes => this.heroes = heroes);
+  }
+
+  ngOnInit(): void {
+    this.getHeroes();
+  }
 
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
